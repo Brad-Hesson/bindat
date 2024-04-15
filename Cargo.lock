@@ -8,6 +8,7 @@ version = "0.1.0"
 dependencies = [
  "bytemuck",
  "byteorder",
+ "serde",
  "serde_json",
  "thiserror",
 ]

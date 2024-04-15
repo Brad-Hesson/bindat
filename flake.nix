@@ -15,6 +15,11 @@
         packages = [
           pkgs.bashInteractive
           pkgs.rustup
+          pkgs.mypy
+          (pkgs.python3.withPackages (ps: [
+            ps.matplotlib
+            ps.numpy
+          ]))
         ];
       };
     };

@@ -70,3 +70,39 @@ impl BinDat {
         Ok(())
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::io::BufWriter;
+
+    use super::*;
+    use serde::{Deserialize, Serialize};
+    use serde_json::json;
+
+    #[derive(Debug, Serialize, Deserialize)]
+    struct Test {
+        peak_peak: f64,
+        rate: f64,
+    }
+
+    #[test]
+    fn test_write() -> Result<(), Box<dyn std::error::Error>> {
+        let file = BufWriter::new(
+            std::fs::OpenOptions::new()
+                .create(true)
+                .truncate(true)
+                .write(true)
+                .open("test.dat")?,
+        );
+        let mut dat = BinDat::new();
+        let params = Test {
+            peak_peak: 0.,
+            rate: 0.,
+        };
+        dat.metadata = json!({"id": "0032", "test_parameters": params});
+        dat.datasets.push(vec![1., 2., 3., 4.]);
+        dat.datasets.push(vec![1.; 10000000]);
+        dat.to_writer(file)?;
+        Ok(())
+    }
+}
