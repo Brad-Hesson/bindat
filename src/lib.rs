@@ -20,7 +20,7 @@ impl Default for BinDat {
 }
 
 #[derive(Debug, Error)]
-enum ReadError {
+pub enum ReadError {
     #[error("IO Error: {0}")]
     IoError(#[from] io::Error),
     #[error("UTF8 Error: {0}")]
@@ -30,13 +30,13 @@ enum ReadError {
 }
 
 impl BinDat {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             datasets: Default::default(),
             metadata: serde_json::Value::Null,
         }
     }
-    fn from_reader(mut reader: impl BufRead) -> Result<Self, ReadError> {
+    pub fn from_reader(mut reader: impl BufRead) -> Result<Self, ReadError> {
         let mut json_bytes = Vec::new();
         let len = reader.read_until(b'\0', &mut json_bytes)?;
         let json_str = std::str::from_utf8(&json_bytes[..len - 1])?;
@@ -57,7 +57,7 @@ impl BinDat {
         Ok(Self { datasets, metadata })
     }
 
-    fn to_writer(&self, mut writer: impl Write) -> io::Result<()> {
+    pub fn to_writer(&self, mut writer: impl Write) -> io::Result<()> {
         serde_json::to_writer_pretty(&mut writer, &self.metadata)?;
         writer.write(b"\n\0")?;
 
