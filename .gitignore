@@ -1,3 +1,4 @@
 /target
 /.direnv
 *.dat
+__pycache__
